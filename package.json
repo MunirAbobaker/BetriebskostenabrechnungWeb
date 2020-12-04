@@ -1,21 +1,40 @@
 {
-  "name": "standalone-table0",
+  "name": "BKAS",
   "version": "1.0.0",
   "description": "Betriebskostenabrechnungssystem",
   "main": "webpack.config.js",
   "dependencies": {
     "@babel/polyfill": "^7.8.7",
+    "@material-ui/core": "^4.11.1",
+    "@urql/exchange-graphcache": "^3.2.0",
+    "graphql": "^15.4.0",
+    "html-webpack-plugin": "^4.5.0",
     "less": "^3.11.1",
+    "local-storage-fallback": "^4.1.1",
+    "material-ui": "^0.20.2",
     "react": "16.9.0",
     "react-app-polyfill": "^1.0.6",
-    "react-dom": "16.9.0"
+    "react-dom": "16.9.0",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^5.2.1",
+    "styled-theming": "^2.2.0",
+    "urql": "^1.11.3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.8.7",
     "@babel/preset-react": "^7.8.3",
+    "@graphql-codegen/cli": "1.19.3",
+    "@graphql-codegen/typescript": "1.18.1",
+    "@graphql-codegen/typescript-operations": "^1.17.12",
+    "@graphql-codegen/typescript-urql": "^2.0.3",
+    "@types/cors": "^2.8.8",
+    "@types/material-ui": "^0.21.8",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "@types/react-router-dom": "^5.1.6",
+    "@types/styled-components": "^5.1.4",
+    "@types/styled-theming": "^2.2.5",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.4.2",
     "file-loader": "^6.0.0",
@@ -35,7 +54,8 @@
     "dev-server": "webpack-dev-server",
     "dev": "npm run dev-server",
     "dev-server-workstation": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --host 0.0.0.0",
-    "dev-workstation": "npm run dev-server-workstation"
+    "dev-workstation": "npm run dev-server-workstation",
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "browserslist": {
     "development": [

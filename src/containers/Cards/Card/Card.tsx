@@ -1,24 +1,25 @@
 import React, {Component} from "react";
+import {Link} from 'react-router-dom';
 
 interface CardProps {
-    cardInfos: any
+    cardInfos: any;
 }
+
 class Card extends Component<CardProps> {
-    componentDidUpdate(prevProps: Readonly<CardProps>, prevState: Readonly<{}>, snapshot?: any): void {
-        console.log("updated")
-    }
+
 
     onClickHandler = () => {
-        this.props.cardInfos.onNavigationHandler(this.props.cardInfos.title);
+        this.props.cardInfos.onNavigationHandler(this.props.cardInfos.id);
     }
-    render(){
-        return(
-            <a href="#" className={"card"}  role="button" onClick={this.onClickHandler}>
-                <h3>{this.props.cardInfos.title}</h3>
-                <p>{this.props.cardInfos.description}</p>
-                <p>{this.props.cardInfos.description}</p>
-                <p>{this.props.cardInfos.description}</p>
-            </a>
+
+    render() {
+        return (
+            <div  className={""} role="button" onClick={this.onClickHandler}>
+                <Link to={'/' + this.props.cardInfos.id}>
+                    <h3 className={"text"}>{this.props.cardInfos.title}</h3>
+                    <p>{this.props.cardInfos.description}</p>
+                </Link>
+            </div>
         );
     }
 }

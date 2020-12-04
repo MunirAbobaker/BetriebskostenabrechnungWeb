@@ -1,8 +1,13 @@
 import React, {Component} from "react";
+
+
+import Wrapper from "./Card/Wrapper";
 import Card from './Card/Card';
 
+
+
 interface CardsProps {
-    cardsData: any
+    cardsData: any;
 }
 
 class Cards extends Component<CardsProps> {
@@ -10,7 +15,7 @@ class Cards extends Component<CardsProps> {
         return (
             <>
                 {this.props.cardsData.map(card => {
-                    return (<Card key={card.title} cardInfos={card}/>)
+                    return (<Wrapper > <Card cardInfos={card}/></Wrapper>  )
                 })}
             </>
         );
@@ -18,3 +23,7 @@ class Cards extends Component<CardsProps> {
 }
 
 export default Cards;
+
+
+
+

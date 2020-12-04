@@ -1,10 +1,12 @@
 const path = require('path');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: './src/index.js',
     output: {
         path: path.join(__dirname, 'public'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/'
     },
     resolve: {
         modules: ["src", "node_modules"],
@@ -42,6 +44,12 @@ module.exports = {
                 test: /\.css$/,
                 use: ['css-loader']
             },
+            {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: "javascript/auto",
+
+            },
         ]
     },
     devtool: 'cheap-module-eval-source-map',
@@ -49,6 +57,13 @@ module.exports = {
         contentBase: [
             path.join(__dirname, 'public'),
         ],
+        historyApiFallback: true,
         port: 3000
     }
+    ,
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: path.join(__dirname, 'public/index.html')
+        })
+    ]
 };

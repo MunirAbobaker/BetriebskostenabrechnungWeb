@@ -3,16 +3,16 @@ import React, {Component} from "react";
 class Footer extends Component {
     render(){
         return(
-            <footer>
+            <div style={{position: 'fixed', bottom: '0px'}}>
                 <a
                     href="p"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
                     Powered by{' '}
-                    <img src="/vercel.svg" alt="DHBW" className="logo" />
+                    <img src="" alt="DHBW" className="logo" />
                 </a>
-            </footer>
+            </div>
         );
     }
 }
