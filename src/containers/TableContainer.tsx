@@ -55,7 +55,7 @@ class TableContainer extends Component<{}, TableContainerState> {
     render() {
         return (
 
-            < MuiThemeProvider>
+          /*   < MuiThemeProvider> */
                 <Container maxWidth="lg">
                   {/*  <Box my={0}>
                         <Form
@@ -94,8 +94,8 @@ class TableContainer extends Component<{}, TableContainerState> {
                         />
                     </Box>
                 </Container>
-
-            </MuiThemeProvider>
+/* 
+            </MuiThemeProvider> */
         );
     }
 }

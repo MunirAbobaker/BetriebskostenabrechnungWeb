@@ -1,54 +1,10 @@
+import { getTextColor, getChildrenBackground, getHoverColor, getBorderColor } from '../utils/getThemeColors';
 import styled, {css} from 'styled-components';
 import style from 'styled-theming';
 
-const getBackground = style.variants('mode', 'variant', {
-    normal: {
-        light: '#ffffff',
-        dark: '#111'
-    },
-    primary: {
-        light: '#EEE',
-        dark: '#1d1d1d'
-    }
-});
-
-
-const getBorderColor= style.variants('mode', 'variant', {
-    normal: {
-        light: '#EEE',
-        dark: '#111'
-    },
-    primary: {
-        light: '#03dac6',
-        dark: '#1d1d1d'
-    }
-});
-
-const getTextColor= style.variants('mode', 'variant', {
-    normal: {
-        light: '#EEE',
-        dark: '#c38fff'
-    },
-    primary: {
-        light: '#1d1d1d',
-        dark: '#c38fff'
-    }
-});
-
-const getHoverColor= style.variants('mode', 'variant', {
-    normal: {
-        light: '#EEE',
-        dark: '#c38fff'
-    },
-    primary: {
-        light: '#c38fff',
-        dark: '#03dac6'
-    }
-});
-
 
 const Button = styled.button`
-   background-color: ${getBackground};
+   background-color: ${getChildrenBackground};
    border: ${getBorderColor};
    color: ${getTextColor};
     &:hover {
@@ -59,7 +15,7 @@ const Button = styled.button`
 `
 
 export const Card = styled.div`
-             background-color: ${getBackground};
+             background-color: ${getChildrenBackground};
             margin: 1rem;
             flex-basis: 45%;
             padding: 1rem;

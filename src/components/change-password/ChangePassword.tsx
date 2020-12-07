@@ -10,8 +10,6 @@ import {useChangePasswordMutation} from "../../generated/graphql";
 const ChangePassword: React.FC<RouteComponentProps> = ({...props}) => {
     const [, changePassword] = useChangePasswordMutation();
     const [newPassword, setNewPassword] = useState('');
-    const [tokenError, setTokenError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
     const [error, setError] = useState('');
     const getLastItem = thePath => thePath.substring(thePath.lastIndexOf('/') + 1)
 

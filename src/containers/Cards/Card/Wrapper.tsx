@@ -10,7 +10,6 @@ export default function Wrapper(props) {
             {theme => (
                 <StyledCard variant="primary">
                     {props.children}
-                   {/* <Card  cardInfos={props.cardInfos} />*/}
                 </StyledCard>)}
         </ThemeConsumer>
     )

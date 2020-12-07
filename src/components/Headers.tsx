@@ -1,10 +1,10 @@
-import React, {Component} from "react";
+import * as React  from "react";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 
 interface HeaderProps {
-
+    children: any;
 }
-const Header: React.FC<HeaderProps> = ({...props}) => {
+const Header: React.FC<HeaderProps> = (props: React.PropsWithChildren<HeaderProps>) => {
     const [{fetching: logoutFetching}, logout ] = useLogoutMutation();
     const [{data, fetching}] = useMeQuery();
     let body = null;
@@ -15,18 +15,22 @@ const Header: React.FC<HeaderProps> = ({...props}) => {
         // user not logged in
     } else if (!data?.me) {
 
-          body = <h3>no user found</h3>
+          body = null
         // user logged in
     } else {
-        console.log(data.me)
-    body = (<div style={{display: "flex", flexDirection: "row", right: '100px'}}>
-    <h2>{data.me.username}</h2>
-    <button onClick={ () => logout()} disabled={logoutFetching}>Logout</button>
-    </div>)
-    }
+     // props.onLoggedInHandler(data.me.username);
+    body = (
+        <div className="username">
+            <img className="images" alt="username" src={window.location.origin + '/assets/username.png'}/>
+            <span>Hi  {data.me.username}</span> 
+            <button onClick={ () => logout()} disabled={logoutFetching}>Logout</button> 
+            
+        </div> 
+    );
 
+    }
         return(
-            <div style={{position: "fixed", top: '0px'}}>
+            <div className="header">
                {props.children}
                {body}
             </div>

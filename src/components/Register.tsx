@@ -21,8 +21,10 @@ const Register: React.FC<RouteComponentProps> = ({...props}) => {
     
     const onSubmit = async (e: any) => {
         e.preventDefault();
+        console.log("register called")
         const response = await register({firstName, lastName, email,  username, password, address});
         if(response.data?.register.errors) {
+            console.log("not working", response.data?.register.errors )
             const error = toErrorMap(response.data.register.errors);
             if(error.username) {
                 console.log("not working username", error)

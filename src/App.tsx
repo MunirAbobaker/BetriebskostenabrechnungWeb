@@ -5,33 +5,12 @@ import style from 'styled-theming';
 import OperationExpenseView from "./containers/OperationExpenseView";
 import useTheme from "./useTheme";
 import './style.less';
-import {BrowserRouter, Route} from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
+import { getBackground, getForeground, getFromColor } from "./utils/getThemeColors";
 
 
-// change style  based on dark/light mode
-const getBackground = style('mode', {
-    light: '#e1e1e1',
-    dark: '#262626'
-})
-
-const getForeground = style('mode', {
-    light: '#1f1f1f',
-    dark: '#EEE'
-})
-
-
-const getFromColor: any = style.variants('mode', 'variant', {
-    normal: {
-        light: '#EEE',
-        dark: '#111'
-    },
-    primary: {
-        light: '#EEE',
-        dark: '#1d1d1d'
-    }
-});
-
-// we can change style of App based on this fct  // props => props.theme.mode === 'dark' ? '#EEE' : '#111'
+// change style of App based on this fct  
+// props => props.theme.mode === 'dark' ? '#EEE' : '#111'
 const GlobalStyle = createGlobalStyle`
     body {
       background-color: ${getBackground};

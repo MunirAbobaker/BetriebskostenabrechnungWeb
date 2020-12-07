@@ -23,8 +23,6 @@ const Login: React.FC<RouteComponentProps> = ({...props}) => {
                 setPasswordError(error["password"])
             }
         }  else if(response.data?.login.user.id) {
-            //worked
-            console.log("worked", response)
             props.history.push('/');
         }  
     };
