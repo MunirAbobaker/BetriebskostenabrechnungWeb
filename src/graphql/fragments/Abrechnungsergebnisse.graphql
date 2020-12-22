@@ -1,0 +1,5 @@
+fragment Abrechnungsergebnisse on Abrechnung {
+  AbrechnungsId
+  UserId
+  Abrechnungszeitraum
+}

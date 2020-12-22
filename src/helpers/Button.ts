@@ -32,5 +32,21 @@ export const Card = styled.div`
              
 `
 
+//width: 50%
+
+export const Form = styled.form`
+            background-color: ${getChildrenBackground};
+            padding: 30px;
+            color: ${getTextColor};
+            text-decoration: none;
+            border: 1px solid black;
+            border-radius: 10px;
+            transition: color 0.15s ease, border-color 0.15s ease;
+            p: {
+               color: white;
+            }
+                 
+`
+
 export default Button;
 

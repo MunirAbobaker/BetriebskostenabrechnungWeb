@@ -1,26 +1,29 @@
 import React from "react";
 import { ThemeConsumer } from "styled-components";
 
-import Button from "../helpers/Button";
+import Button from "../../helpers/Button";
 
-export default function ToggleMode(props) {
+interface CustomizedButtonProps {
+  onClick: any;
+  class?: any;
+  type: any;
+}
+
+const CustomizedButton: React.FC<CustomizedButtonProps> = (props) => {
   return (
     <ThemeConsumer>
       {(theme) => (
         <Button
           variant="primary"
           className={props.class}
-          onClick={(e) =>
-            theme.setTheme(
-              theme.mode === "dark"
-                ? { ...theme, mode: "light" }
-                : { ...theme, mode: "dark" }
-            )
-          }
+          type={props.type}
+          onClick={props.onClick}
         >
           {props.children}
         </Button>
       )}
     </ThemeConsumer>
   );
-}
+};
+
+export default CustomizedButton;

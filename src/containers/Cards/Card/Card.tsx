@@ -1,29 +1,60 @@
-import React, {Component} from "react";
-import {Link} from 'react-router-dom';
-const path = require('path');
-
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+const path = require("path");
+import { useLogoutMutation } from "../../../generated/graphql";
 
 interface CardProps {
-    cardInfos: any;
+  cardInfos: any;
+  userLoggedIn: string;
 }
 
-class Card extends Component<CardProps> {
+const Card: React.FC<CardProps> = ({ ...props }) => {
+  const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
 
-    onClickHandler = () => {
-    }
+  const onlogoutHandler = () => {
+    logout();
+  };
+  return (
+    <div key={props.cardInfos.id} className={"cardTest"}>
+      {props.cardInfos.id === "logout" ? (
+        <>
+          <img
+            className={"images"}
+            alt={props.cardInfos.title}
+            src={
+              window.location.origin + "/assets/" + props.cardInfos.id + ".png"
+            }
+          />
 
-    render() {
-        return (
-            <div key={this.props.cardInfos.id} className="cardTest" role="button" onClick={this.onClickHandler}>
-                <Link to={'/' + this.props.cardInfos.id}>
-                    <img className="images" alt={this.props.cardInfos.title} src={window.location.origin+ '/assets/' + this.props.cardInfos.id+ '.png' }/>
-                   
-                    <h3 className={"text"}>{this.props.cardInfos.title}</h3>
-                  {/*   <p>{this.props.cardInfos.description}</p> */}
-                </Link>
-            </div>
-        );
-    }
-}
+          {props.userLoggedIn && props.cardInfos.id === "register" ? (
+            <h3 className={"text"}>{props.cardInfos.title}</h3>
+          ) : (
+            <a role="button" onClick={() => onlogoutHandler()}>
+              <h3 className={"text"}>{props.cardInfos.title}</h3>
+            </a>
+          )}
+        </>
+      ) : (
+        <Link
+          to={"/" + props.cardInfos.id}
+          className={
+            props.userLoggedIn && props.cardInfos.id === "register"
+              ? "NotClickable"
+              : ""
+          }
+        >
+          <img
+            className={"images"}
+            alt={props.cardInfos.title}
+            src={
+              window.location.origin + "/assets/" + props.cardInfos.id + ".png"
+            }
+          />
+          <h3 className={"text"}>{props.cardInfos.title}</h3>
+        </Link>
+      )}
+    </div>
+  );
+};
 
 export default Card;

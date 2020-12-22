@@ -1,0 +1,17 @@
+
+mutation createEinzelabrechnung( 
+   $options: [EinzelabrechnungType!]!
+) {
+   createEinzelabrechnung(
+      options: $options
+  )  {
+        errors {
+      ...RegularError
+    }
+
+     Einzelabrechnungsdata {
+      Abrechnungsposition
+    }
+   
+  }
+}

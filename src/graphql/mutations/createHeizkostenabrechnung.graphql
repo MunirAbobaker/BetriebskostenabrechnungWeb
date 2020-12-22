@@ -1,0 +1,17 @@
+
+mutation createHeizkostenabrechnung( 
+   $options: [HeizkostenType!]!
+) {
+   createHeizkosten(
+      options: $options
+  )  {
+        errors {
+      ...RegularError
+    }
+
+     Abrechnungsdata {
+       ...Heizkostenergebnisse
+    }
+   
+  }
+}

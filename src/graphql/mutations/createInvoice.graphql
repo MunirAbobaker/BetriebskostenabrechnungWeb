@@ -1,0 +1,22 @@
+mutation createInvoice(
+  $monatliche_Abschlag: Float!
+  $Wohnflaeche: Float!
+  $Start_Data: String!
+  $End_Data: String!
+) {
+  createAbrechnung(
+    options: {
+      monatliche_Abschlag: $monatliche_Abschlag
+      Wohnflaeche: $Wohnflaeche
+      Start_Data: $Start_Data
+      End_Data: $End_Data
+    }
+  ) {
+    errors {
+      ...RegularError
+    }
+    Abrechnungsdata {
+      ...Abrechnungsergebnisse
+    }
+  }
+}

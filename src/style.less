@@ -22,6 +22,25 @@ button {
    right: 0;
  }
 
+ .NotAllowed {
+  cursor: not-allowed; // //pointer-events: none;
+  opacity: 0.4;
+  :hover{
+      
+  background-color: rgb(209, 118, 118);
+  }
+ }
+ .NotClickable {
+  pointer-events: none;
+
+ }
+
+.Next {
+  left: 88%;
+  position: relative;
+}
+ @import url('https://cdnjs.cloudflare.com/ajax/libs/react-datepicker/2.8.0/react-datepicker.min.css');
+
 main {
   padding: 5rem 0;
   flex: 1;
@@ -59,9 +78,22 @@ a {
 .header {
   position: fixed;
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
    top: 0px;
   justify-content: center;
+}
+.sectionItem {
+  width: 400px;
+  height: 100%;
+  padding: 10px;
+  list-style: none;
+}
+.list-item {
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #ecf0f1;
+  position: relative;
 }
 
 .username {
@@ -123,7 +155,7 @@ code {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  max-width: 900px;
+  max-width:  90%;//     900px;
   margin-top: 3rem;
 }
 
@@ -175,10 +207,115 @@ code {
   font-size: 1.25rem;
   line-height: 1.5;
 }
+// input.tsx
+.InputContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+.InputElement {
+  width: 50%;
+  outline: 0;
+  border-width: 0 0 1px;
+  border-color: #e1e1e1;
+  background: transparent;
+}
+
+.InputElement:focus{
+  border-color: green;
+}
+.InputError {
+  border-color: red;
+}
+.SpanElement {
+  color: red;
+}
+
+input:placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #e1e1e1;
+  opacity: 1; /* Firefox */
+}
 
 .logo {
   height: 1em;
 }
+
+// spinner
+
+.Loader,
+.Loader:before,
+.Loader:after {
+    border-radius: 50%;
+}
+.Loader {
+    color: #6c006c;
+    font-size: 11px;
+    text-indent: -99999em;
+    margin: 55px auto;
+    position: relative;
+    width: 10em;
+    height: 10em;
+    box-shadow: inset 0 0 0 1em;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+}
+.Loader:before,
+.Loader:after {
+    position: absolute;
+    content: '';
+}
+.Loader:before {
+    width: 5.2em;
+    height: 10.2em;
+    background: #fff;
+    border-radius: 10.2em 0 0 10.2em;
+    top: -0.1em;
+    left: -0.1em;
+    -webkit-transform-origin: 5.1em 5.1em;
+    transform-origin: 5.1em 5.1em;
+    -webkit-animation: load2 2s infinite ease 1.5s;
+    animation: load2 2s infinite ease 1.5s;
+}
+.Loader:after {
+    width: 5.2em;
+    height: 10.2em;
+    background: #fff;
+    border-radius: 0 10.2em 10.2em 0;
+    top: -0.1em;
+    left: 4.9em;
+    -webkit-transform-origin: 0.1em 5.1em;
+    transform-origin: 0.1em 5.1em;
+    -webkit-animation: load2 2s infinite ease;
+    animation: load2 2s infinite ease;
+}
+@-webkit-keyframes load2 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes load2 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+
+
+
+//
+
+
 
 @media (max-width: 600px) {
   .grid {

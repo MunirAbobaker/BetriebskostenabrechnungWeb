@@ -1,63 +1,123 @@
-import React, { Component } from "react";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import * as React from "react";
 import Table from "../components/Table/Table";
-import { Box, Container } from "@material-ui/core";
-
+import { useGetGesamteAbrechnungQuery } from "../generated/graphql";
+import {  RouteComponentProps } from "react-router-dom";
+import Spinner from '../components/UI/Spinner'
 
 export interface Data {
-    firstName: string,
-    lastName: string,
-    username: string,
-    email: string,
-    password: string,
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
 }
 
 interface TableContainerState {
-    data: Data[];
-    editIdex?: number
+  data: Data[];
+  editIdex?: number;
 }
 
-class TableContainer extends Component<{}, TableContainerState> {
-    state = {
-        data: [],
-        editIdex: -1
-    };
+const TableContainer: React.FC<RouteComponentProps> = (...props) => {
+  const [dataState, setData] = React.useState([]);
+  const [editIdex, setEditedIdex] = React.useState(-1);
+  const [fetchedData, setFetchedData] = React.useState({});
 
-    constructor(props: any) {
-        super(props);
-        this.handleChange.bind(this);
-        this.startEditing.bind(this);
-    }
+  const [{ data, fetching }] = useGetGesamteAbrechnungQuery();
 
-    handleRemove = (i: any) => {
-        this.setState(state => ({
-            data: state.data.filter((_k: any, j: any) => j !==i )
-        }));
-    }
+  let body = null;
+  let Heizkosten = null;
+  // data is loading
+  if (fetching) {
+    console.log("still fetching", fetching);
+  } else if (!data?.getAllegemeinebrechnung) {
+    console.log("there is no data");
+    return null;
+  } else {
+    Heizkosten = data.getAllegemeinebrechnung.HeizkostenAbrechnungsdataArray;
+    console.log("you got some data", data.getAllegemeinebrechnung);
+  }
 
-    startEditing = (i: number) => {
-        this.setState({editIdex: i});
+  const handleRemove = (i: any) => {
+    const copyData = [...dataState];
+    copyData.filter((_k: any, j: any) => j !== i);
+    setData(copyData);
+  };
 
-    }
+  const startEditing = (i: number) => {
+    setEditedIdex(i);
+  };
 
-    stopEditing = () => {
-        this.setState({editIdex: -1});
-    }
+  const stopEditing = () => {
+    setEditedIdex(-1);
+  };
 
-    handleChange = (e: React.FormEvent<HTMLInputElement> , name: any, i: any) => {
-        const {value}  = e.currentTarget;
-        this.setState(state => ({
-            data: state.data.map(
-                (row: any, j: any) => (j === i ? { ...row, [name]: value } : row)
-            )
-        }));
-    };
-    render() {
-        return (
+  const handleChange = (
+    e: React.FormEvent<HTMLInputElement>,
+    name: any,
+    i: any
+  ) => {
+    const { value } = e.currentTarget;
+    const copyData = [...dataState];
 
-          /*   < MuiThemeProvider> */
-                <Container maxWidth="lg">
-                  {/*  <Box my={0}>
+    copyData.map((row: any, j: any) =>
+      j === i ? { ...row, [name]: value } : row
+    );
+    setData(copyData);
+  };
+
+  const renderHeizKosten = () => {
+    let head = [];
+    Heizkosten.forEach((el) => {
+      const item = {
+        name: el.Kostenkonzept,
+        props: el.Kostenkonzept,
+      };
+      head.push(item);
+    });
+
+    return (
+      <Table style={{width: '20vw'}}
+        handleRemove={handleRemove}
+        startEditing={startEditing}
+        editIdex={editIdex}
+        stopEditing={stopEditing}
+        handleChange={handleChange}
+        data={Heizkosten}
+        header={[
+          {
+            name: "Kostenkonzept",
+            prop: "Kostenkonzept",
+          },
+          {
+            name: "Verteilschluessel_Einheit",
+            prop: "Verteilschluessel_Einheit",
+          },
+          {
+            name: "Verteilschluessel",
+            prop: "Verteilschluessel",
+          },
+          {
+            name: "Kosten_pro_Einheit",
+            prop: "Kosten_pro_Einheit",
+          },
+          {
+            name: "Betrag_in_Euro",
+            prop: "Betrag_in_Euro",
+          },
+          {
+            name: "Gesamt_in_Euro",
+            prop: "Gesamt_in_Euro",
+          },
+        ]}
+      />
+    );
+  };
+
+  return (
+    <div style={{width: '100%'}}>
+      {Heizkosten != null ? renderHeizKosten() : <Spinner />}
+
+      {/*  <Box my={0}>
                         <Form
                             onSubmit={(submission: any) =>
                                 this.setState({
@@ -65,39 +125,10 @@ class TableContainer extends Component<{}, TableContainerState> {
                                 })}
                         />
                     </Box>*/}
-                    <Box my={10}>
-                        <Table
-                            handleRemove={this.handleRemove}
-                            startEditing={this.startEditing}
-                            editIdex={this.state.editIdex}
-                            stopEditing={this.stopEditing}
-                            handleChange={this.handleChange}
-                            data={this.state.data}
-                            header={[
-                                {
-                                    name: "firstName",
-                                    prop: "firstName"
-                                },
-                                {
-                                    name: "lastName",
-                                    prop: "lastName"
-                                },
-                                {
-                                    name: "username",
-                                    prop: "username"
-                                },
-                                {
-                                    name: "email",
-                                    prop: "email"
-                                }
-                            ]}
-                        />
-                    </Box>
-                </Container>
-/* 
-            </MuiThemeProvider> */
-        );
-    }
-}
+      <div  >
+      </div>
+    </div>
+  );
+};
 
 export default TableContainer;

@@ -1,29 +1,66 @@
-import React, {Component} from "react";
-
+import React, { Component } from "react";
 
 import Wrapper from "./Card/Wrapper";
-import Card from './Card/Card';
-
-
+import Card from "./Card/Card";
+import { ThemeConsumer } from "styled-components";
+import { Card as StyledCard } from "../../helpers/Button";
 
 interface CardsProps {
-    cardsData: any;
+  cardsData: any;
+  userLoggedIn: string;
 }
 
 class Cards extends Component<CardsProps> {
-    render(): React.ReactNode {
-        return (
-            <>
-                {this.props.cardsData.map(card => {
-                    return (<Wrapper > <Card cardInfos={card}/></Wrapper>  )
-                })}
-            </>
-        );
-    }
+  cardToRender = () => {
+    let cards = [];
+    this.props.cardsData.forEach((card) => {
+      if (this.props.userLoggedIn) {
+        if (card.id != "login") {
+          cards.push(card);
+        }
+      } else {
+        if (card.id != "logout") {
+          cards.push(card);
+        }
+      }
+    });
+
+    return cards;
+  };
+  render(): React.ReactNode {
+    return (
+      <>
+        {this.cardToRender().map((card) => {
+          return (
+            
+              <ThemeConsumer>
+                {(theme) => (
+                  <StyledCard
+                    variant="primary"
+                    className={
+                      this.props.userLoggedIn && card.id === "register"
+                        ? "NotAllowed"
+                        : ""
+                    }
+                  >
+                    <Card
+                      cardInfos={card}
+                      userLoggedIn={this.props.userLoggedIn}
+                    />
+                  </StyledCard>
+                )}
+              </ThemeConsumer>
+          );
+        })}
+      </>
+    );
+  }
 }
 
 export default Cards;
 
-
-
-
+{
+  /* <Wrapper > 
+                    <Card cardInfos={card} userLoggedIn={this.props.userLoggedIn} />
+                 </Wrapper> */
+}

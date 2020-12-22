@@ -1,0 +1,40 @@
+query GetGesamteAbrechnung 
+{
+  getAllegemeinebrechnung {
+    errors {
+      field
+      message
+    }
+    AbrechnungsdataArray {
+      AbrechnungsId
+      monatliche_Abschlag
+      Wohnflaeche
+      Start_Data
+      End_Data
+    }
+    EinzelabrechnungsdataArray {
+      id
+      Abrechnungsposition
+      verteilt_nach
+      Gesamte_Einheiten
+      Gesamte_Kosten
+      Einheit_Anteil
+      Kosten_Anteil
+      Einheit
+    }
+    HeizkostenAbrechnungsdataArray {
+      id
+      Kostenkonzept
+      Verteilschluessel_Einheit
+      Verteilschluessel
+      Kosten_pro_Einheit
+      Kosten_pro_Einheit
+      Betrag_in_Euro
+      Gesamt_in_Euro
+    }
+    BewohnerBetribskostendata {
+      id
+      Betrag
+    }
+  }
+}

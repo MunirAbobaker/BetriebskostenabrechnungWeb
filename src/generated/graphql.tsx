@@ -18,6 +18,14 @@ export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   me?: Maybe<User>;
+  getHeizkosten: Heizkostenabrechnung;
+  getAbrechnung: AbrechnungResponse;
+  getAbrechnungen: Array<AbrechnungResponse>;
+  getEinzelabrechnung: Einzelabrechnung;
+  getEinzelabrechnungen: Array<Einzelabrechnung>;
+  getAllegemeinebrechnung: AllgemeineResponse;
+  getBewohnerBetriebskostenAbrechnung?: Maybe<BewohnerBetriebskostenResponse>;
+  getBewohnerBetriebskostenAbrechnungen?: Maybe<Array<BewohnerBetriebskostenResponse>>;
 };
 
 export type User = {
@@ -30,6 +38,88 @@ export type User = {
   address: Scalars['String'];
 };
 
+export type Heizkostenabrechnung = {
+  __typename?: 'Heizkostenabrechnung';
+  id: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  Abrechnung_Id: Scalars['String'];
+  Kostenkonzept: Scalars['String'];
+  Verteilschluessel_Einheit: Scalars['String'];
+  Verteilschluessel: Scalars['Float'];
+  Kosten_pro_Einheit: Scalars['Float'];
+  Betrag_in_Euro: Scalars['Float'];
+  Gesamt_in_Euro: Scalars['Float'];
+};
+
+export type AbrechnungResponse = {
+  __typename?: 'AbrechnungResponse';
+  errors?: Maybe<Array<FieldError>>;
+  Abrechnungsdata?: Maybe<Abrechnung>;
+  AbrechnungsdataArray?: Maybe<Array<Abrechnung>>;
+};
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type Abrechnung = {
+  __typename?: 'Abrechnung';
+  AbrechnungsId: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  UserId: Scalars['String'];
+  monatliche_Abschlag: Scalars['Float'];
+  Abrechnungszeitraum: Scalars['Float'];
+  Wohnflaeche: Scalars['Float'];
+  Start_Data: Scalars['String'];
+  End_Data: Scalars['String'];
+};
+
+export type Einzelabrechnung = {
+  __typename?: 'Einzelabrechnung';
+  id: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  AbrechnungsId: Scalars['String'];
+  Abrechnungsposition: Scalars['String'];
+  verteilt_nach: Scalars['String'];
+  Gesamte_Einheiten: Scalars['Float'];
+  Einheit_Anteil: Scalars['Float'];
+  Einheit: Scalars['String'];
+  Gesamte_Kosten: Scalars['Float'];
+  Kosten_Anteil: Scalars['Float'];
+  Umlagekosten: Scalars['Float'];
+  Nichtumlagekosten: Scalars['Float'];
+};
+
+export type AllgemeineResponse = {
+  __typename?: 'AllgemeineResponse';
+  errors?: Maybe<Array<FieldError>>;
+  AbrechnungsdataArray?: Maybe<Array<Abrechnung>>;
+  HeizkostenAbrechnungsdataArray?: Maybe<Array<Heizkostenabrechnung>>;
+  EinzelabrechnungsdataArray?: Maybe<Array<Einzelabrechnung>>;
+  BewohnerBetribskostendata?: Maybe<BewohnerBetriebskosten>;
+};
+
+export type BewohnerBetriebskosten = {
+  __typename?: 'BewohnerBetriebskosten';
+  id: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  AbrechnungsId: Scalars['String'];
+  Position: Scalars['String'];
+  Betrag: Scalars['Float'];
+};
+
+export type BewohnerBetriebskostenResponse = {
+  __typename?: 'BewohnerBetriebskostenResponse';
+  errors?: Maybe<Array<FieldError>>;
+  BewohnerBetribskostendata?: Maybe<BewohnerBetriebskosten>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   changePassword: UserResponse;
@@ -37,6 +127,14 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  createHeizkosten: HeizkostenabrechnungsResponse;
+  updateHeizkosten: Scalars['Boolean'];
+  createAbrechnung: AbrechnungResponse;
+  updateAbrechnung: Scalars['Boolean'];
+  createEinzelabrechnung: EinzelabrechnungsResponse;
+  updateEinzelabrechnung: Scalars['Boolean'];
+  createBewohnerBetriebskosten: BewohnerBetriebskostenResponse;
+  updateBewohnerBetriebskostenAbrechnung: Scalars['Boolean'];
 };
 
 
@@ -60,16 +158,50 @@ export type MutationLoginArgs = {
   options: UsernamePasswordInput;
 };
 
+
+export type MutationCreateHeizkostenArgs = {
+  options: Array<HeizkostenType>;
+};
+
+
+export type MutationUpdateHeizkostenArgs = {
+  options: HeizkostenType;
+};
+
+
+export type MutationCreateAbrechnungArgs = {
+  options: AbrechnungType;
+};
+
+
+export type MutationUpdateAbrechnungArgs = {
+  options: AbrechnungType;
+};
+
+
+export type MutationCreateEinzelabrechnungArgs = {
+  options: Array<EinzelabrechnungType>;
+};
+
+
+export type MutationUpdateEinzelabrechnungArgs = {
+  options: EinzelabrechnungType;
+};
+
+
+export type MutationCreateBewohnerBetriebskostenArgs = {
+  options: BewohnerBetriebskostenType;
+};
+
+
+export type MutationUpdateBewohnerBetriebskostenAbrechnungArgs = {
+  options: BewohnerBetriebskostenType;
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
   user?: Maybe<User>;
-};
-
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
 };
 
 export type RegisterInput = {
@@ -85,6 +217,59 @@ export type UsernamePasswordInput = {
   email: Scalars['String'];
   password: Scalars['String'];
 };
+
+export type HeizkostenabrechnungsResponse = {
+  __typename?: 'HeizkostenabrechnungsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  Abrechnungsdata?: Maybe<Heizkostenabrechnung>;
+  AbrechnungsdataArray?: Maybe<Array<Heizkostenabrechnung>>;
+};
+
+export type HeizkostenType = {
+  Kostenkonzept: Scalars['String'];
+  Verteilschluessel: Scalars['Float'];
+  Kosten_pro_Einheit: Scalars['Float'];
+};
+
+export type AbrechnungType = {
+  monatliche_Abschlag: Scalars['Float'];
+  Wohnflaeche: Scalars['Float'];
+  Start_Data: Scalars['String'];
+  End_Data: Scalars['String'];
+};
+
+export type EinzelabrechnungsResponse = {
+  __typename?: 'EinzelabrechnungsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  Einzelabrechnungsdata?: Maybe<Einzelabrechnung>;
+};
+
+export type EinzelabrechnungType = {
+  Abrechnungsposition: Scalars['String'];
+  verteilt_nach: Scalars['String'];
+  Gesamte_Einheiten: Scalars['Float'];
+  Einheit_Anteil: Scalars['Float'];
+  Einheit?: Maybe<Scalars['String']>;
+  Gesamte_Kosten: Scalars['Float'];
+  Kosten_Anteil: Scalars['Float'];
+  Umlagekosten: Scalars['Float'];
+  Nichtumlagekosten: Scalars['Float'];
+};
+
+export type BewohnerBetriebskostenType = {
+  Position: Scalars['String'];
+  Betrag: Scalars['Float'];
+};
+
+export type AbrechnungsergebnisseFragment = (
+  { __typename?: 'Abrechnung' }
+  & Pick<Abrechnung, 'AbrechnungsId' | 'UserId' | 'Abrechnungszeitraum'>
+);
+
+export type HeizkostenergebnisseFragment = (
+  { __typename?: 'Heizkostenabrechnung' }
+  & Pick<Heizkostenabrechnung, 'Kostenkonzept' | 'Verteilschluessel' | 'Verteilschluessel_Einheit'>
+);
 
 export type RegularErrorFragment = (
   { __typename?: 'FieldError' }
@@ -118,6 +303,86 @@ export type ChangePasswordMutation = (
   & { changePassword: (
     { __typename?: 'UserResponse' }
     & RegularUserResponseFragment
+  ) }
+);
+
+export type CreateBewohnerBetriebskostenMutationVariables = Exact<{
+  Position: Scalars['String'];
+  Betrag: Scalars['Float'];
+}>;
+
+
+export type CreateBewohnerBetriebskostenMutation = (
+  { __typename?: 'Mutation' }
+  & { createBewohnerBetriebskosten: (
+    { __typename?: 'BewohnerBetriebskostenResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & RegularErrorFragment
+    )>>, BewohnerBetribskostendata?: Maybe<(
+      { __typename?: 'BewohnerBetriebskosten' }
+      & Pick<BewohnerBetriebskosten, 'Position' | 'Betrag'>
+    )> }
+  ) }
+);
+
+export type CreateEinzelabrechnungMutationVariables = Exact<{
+  options: Array<EinzelabrechnungType>;
+}>;
+
+
+export type CreateEinzelabrechnungMutation = (
+  { __typename?: 'Mutation' }
+  & { createEinzelabrechnung: (
+    { __typename?: 'EinzelabrechnungsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & RegularErrorFragment
+    )>>, Einzelabrechnungsdata?: Maybe<(
+      { __typename?: 'Einzelabrechnung' }
+      & Pick<Einzelabrechnung, 'Abrechnungsposition'>
+    )> }
+  ) }
+);
+
+export type CreateHeizkostenabrechnungMutationVariables = Exact<{
+  options: Array<HeizkostenType>;
+}>;
+
+
+export type CreateHeizkostenabrechnungMutation = (
+  { __typename?: 'Mutation' }
+  & { createHeizkosten: (
+    { __typename?: 'HeizkostenabrechnungsResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & RegularErrorFragment
+    )>>, Abrechnungsdata?: Maybe<(
+      { __typename?: 'Heizkostenabrechnung' }
+      & HeizkostenergebnisseFragment
+    )> }
+  ) }
+);
+
+export type CreateInvoiceMutationVariables = Exact<{
+  monatliche_Abschlag: Scalars['Float'];
+  Wohnflaeche: Scalars['Float'];
+  Start_Data: Scalars['String'];
+  End_Data: Scalars['String'];
+}>;
+
+
+export type CreateInvoiceMutation = (
+  { __typename?: 'Mutation' }
+  & { createAbrechnung: (
+    { __typename?: 'AbrechnungResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & RegularErrorFragment
+    )>>, Abrechnungsdata?: Maybe<(
+      { __typename?: 'Abrechnung' }
+      & AbrechnungsergebnisseFragment
+    )> }
   ) }
 );
 
@@ -171,6 +436,32 @@ export type RegisterMutation = (
   ) }
 );
 
+export type GetGesamteAbrechnungQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGesamteAbrechnungQuery = (
+  { __typename?: 'Query' }
+  & { getAllegemeinebrechnung: (
+    { __typename?: 'AllgemeineResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, AbrechnungsdataArray?: Maybe<Array<(
+      { __typename?: 'Abrechnung' }
+      & Pick<Abrechnung, 'AbrechnungsId' | 'monatliche_Abschlag' | 'Wohnflaeche' | 'Start_Data' | 'End_Data'>
+    )>>, EinzelabrechnungsdataArray?: Maybe<Array<(
+      { __typename?: 'Einzelabrechnung' }
+      & Pick<Einzelabrechnung, 'id' | 'Abrechnungsposition' | 'verteilt_nach' | 'Gesamte_Einheiten' | 'Gesamte_Kosten' | 'Einheit_Anteil' | 'Kosten_Anteil' | 'Einheit'>
+    )>>, HeizkostenAbrechnungsdataArray?: Maybe<Array<(
+      { __typename?: 'Heizkostenabrechnung' }
+      & Pick<Heizkostenabrechnung, 'id' | 'Kostenkonzept' | 'Verteilschluessel_Einheit' | 'Verteilschluessel' | 'Kosten_pro_Einheit' | 'Betrag_in_Euro' | 'Gesamt_in_Euro'>
+    )>>, BewohnerBetribskostendata?: Maybe<(
+      { __typename?: 'BewohnerBetriebskosten' }
+      & Pick<BewohnerBetriebskosten, 'id' | 'Betrag'>
+    )> }
+  ) }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -182,6 +473,20 @@ export type MeQuery = (
   )> }
 );
 
+export const AbrechnungsergebnisseFragmentDoc = gql`
+    fragment Abrechnungsergebnisse on Abrechnung {
+  AbrechnungsId
+  UserId
+  Abrechnungszeitraum
+}
+    `;
+export const HeizkostenergebnisseFragmentDoc = gql`
+    fragment Heizkostenergebnisse on Heizkostenabrechnung {
+  Kostenkonzept
+  Verteilschluessel
+  Verteilschluessel_Einheit
+}
+    `;
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
   field
@@ -215,6 +520,75 @@ export const ChangePasswordDocument = gql`
 
 export function useChangePasswordMutation() {
   return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
+export const CreateBewohnerBetriebskostenDocument = gql`
+    mutation createBewohnerBetriebskosten($Position: String!, $Betrag: Float!) {
+  createBewohnerBetriebskosten(options: {Position: $Position, Betrag: $Betrag}) {
+    errors {
+      ...RegularError
+    }
+    BewohnerBetribskostendata {
+      Position
+      Betrag
+    }
+  }
+}
+    ${RegularErrorFragmentDoc}`;
+
+export function useCreateBewohnerBetriebskostenMutation() {
+  return Urql.useMutation<CreateBewohnerBetriebskostenMutation, CreateBewohnerBetriebskostenMutationVariables>(CreateBewohnerBetriebskostenDocument);
+};
+export const CreateEinzelabrechnungDocument = gql`
+    mutation createEinzelabrechnung($options: [EinzelabrechnungType!]!) {
+  createEinzelabrechnung(options: $options) {
+    errors {
+      ...RegularError
+    }
+    Einzelabrechnungsdata {
+      Abrechnungsposition
+    }
+  }
+}
+    ${RegularErrorFragmentDoc}`;
+
+export function useCreateEinzelabrechnungMutation() {
+  return Urql.useMutation<CreateEinzelabrechnungMutation, CreateEinzelabrechnungMutationVariables>(CreateEinzelabrechnungDocument);
+};
+export const CreateHeizkostenabrechnungDocument = gql`
+    mutation createHeizkostenabrechnung($options: [HeizkostenType!]!) {
+  createHeizkosten(options: $options) {
+    errors {
+      ...RegularError
+    }
+    Abrechnungsdata {
+      ...Heizkostenergebnisse
+    }
+  }
+}
+    ${RegularErrorFragmentDoc}
+${HeizkostenergebnisseFragmentDoc}`;
+
+export function useCreateHeizkostenabrechnungMutation() {
+  return Urql.useMutation<CreateHeizkostenabrechnungMutation, CreateHeizkostenabrechnungMutationVariables>(CreateHeizkostenabrechnungDocument);
+};
+export const CreateInvoiceDocument = gql`
+    mutation createInvoice($monatliche_Abschlag: Float!, $Wohnflaeche: Float!, $Start_Data: String!, $End_Data: String!) {
+  createAbrechnung(
+    options: {monatliche_Abschlag: $monatliche_Abschlag, Wohnflaeche: $Wohnflaeche, Start_Data: $Start_Data, End_Data: $End_Data}
+  ) {
+    errors {
+      ...RegularError
+    }
+    Abrechnungsdata {
+      ...Abrechnungsergebnisse
+    }
+  }
+}
+    ${RegularErrorFragmentDoc}
+${AbrechnungsergebnisseFragmentDoc}`;
+
+export function useCreateInvoiceMutation() {
+  return Urql.useMutation<CreateInvoiceMutation, CreateInvoiceMutationVariables>(CreateInvoiceDocument);
 };
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
@@ -257,6 +631,51 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const GetGesamteAbrechnungDocument = gql`
+    query GetGesamteAbrechnung {
+  getAllegemeinebrechnung {
+    errors {
+      field
+      message
+    }
+    AbrechnungsdataArray {
+      AbrechnungsId
+      monatliche_Abschlag
+      Wohnflaeche
+      Start_Data
+      End_Data
+    }
+    EinzelabrechnungsdataArray {
+      id
+      Abrechnungsposition
+      verteilt_nach
+      Gesamte_Einheiten
+      Gesamte_Kosten
+      Einheit_Anteil
+      Kosten_Anteil
+      Einheit
+    }
+    HeizkostenAbrechnungsdataArray {
+      id
+      Kostenkonzept
+      Verteilschluessel_Einheit
+      Verteilschluessel
+      Kosten_pro_Einheit
+      Kosten_pro_Einheit
+      Betrag_in_Euro
+      Gesamt_in_Euro
+    }
+    BewohnerBetribskostendata {
+      id
+      Betrag
+    }
+  }
+}
+    `;
+
+export function useGetGesamteAbrechnungQuery(options: Omit<Urql.UseQueryArgs<GetGesamteAbrechnungQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetGesamteAbrechnungQuery>({ query: GetGesamteAbrechnungDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

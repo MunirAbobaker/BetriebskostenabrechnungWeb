@@ -1,0 +1,7 @@
+fragment Heizkostenergebnisse on Heizkostenabrechnung {
+    Kostenkonzept
+    Verteilschluessel
+    Verteilschluessel_Einheit
+}
+
+

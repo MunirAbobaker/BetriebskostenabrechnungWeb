@@ -1,0 +1,21 @@
+mutation createBewohnerBetriebskosten( 
+   $Position: String!,
+   $Betrag: Float!
+) {
+   createBewohnerBetriebskosten(
+       options: {
+           Position: $Position,
+           Betrag: $Betrag
+       }
+  )  {
+        errors {
+      ...RegularError
+    }
+
+     BewohnerBetribskostendata {
+      Position
+      Betrag
+    }
+   
+  }
+}

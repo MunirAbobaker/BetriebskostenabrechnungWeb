@@ -49,8 +49,8 @@ export const getBorderColor= style.variants('mode', 'variant', {
 
 export const getTextColor= style.variants('mode', 'variant', {
     normal: {
-        light: '#EEE',
-        dark: '#c38fff'
+        light: '#1d1d1d',
+        dark: 'white'
     },
     primary: {
         light: '#1d1d1d',
@@ -68,3 +68,4 @@ export const getHoverColor= style.variants('mode', 'variant', {
         dark: '#03dac6'
     }
 });
+
