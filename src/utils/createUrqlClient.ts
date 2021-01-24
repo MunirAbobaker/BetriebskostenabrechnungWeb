@@ -1,7 +1,7 @@
 import { createClient, dedupExchange, fetchExchange, Provider } from "urql";
 import { cacheExchange, Cache, QueryInput, query } from '@urql/exchange-graphcache';
 
-import { CreateBewohnerBetriebskostenMutation, GetGesamteAbrechnungQuery, LoginMutation, MeDocument, MeQuery, RegisterMutation } from "../generated/graphql";
+import { AbrechnungResponse, CreateBewohnerBetriebskostenMutation, GetAllUserAbrechnungenDocument, GetAllUserAbrechnungenQuery, GetGesamteAbrechnungQuery, LoginMutation, LogoutMutation, MeDocument, MeQuery, RegisterMutation } from "../generated/graphql";
 
 function betterUpdateQuery<Result, Query>(
     cache: Cache,
@@ -17,20 +17,26 @@ export const client = createClient({
     fetchOptions: {
         credentials: "include",
     }, 
-    exchanges:  // update cache query after mutation
-    [dedupExchange,
-         cacheExchange({
+     exchanges:   
+     [dedupExchange,
+         cacheExchange
+         ({
+            resolvers: {
+                Query: {
+                    getAllUserAbrechnungen: (_parent, args) => ({ __typename: 'AbrechnungResponse', id: args.AbrechnungsId })
+                  }
+              },
              updates: {
                 Mutation: {
-                    logout: (_result, args, cache, info) => { // return null for meQeury
-                          betterUpdateQuery<LoginMutation, MeQuery>(
+                    logout: (_result, args, cache, info) => { 
+                          betterUpdateQuery<LogoutMutation, MeQuery>(
                             cache, 
                            {query: MeDocument},
                            _result,
                            () => ({ me: null })
                         )
                     },
-                    
+  
                     login: (_result, args, cache, info) => {
                            betterUpdateQuery<LoginMutation, MeQuery>(
                            cache, 
@@ -67,26 +73,35 @@ export const client = createClient({
                          )
                      },
 
-                 /*     createBewohnerBetriebskosten: (_result, args, cache, info) => {
-                        betterUpdateQuery<CreateBewohnerBetriebskostenMutation, GetGesamteAbrechnungQuery>(
-                         cache, 
-                         {query: MeDocument},
+                     getAbrechnungAfterLougout: (_result, args, cache, info) => {  
+                        betterUpdateQuery<LogoutMutation, GetAllUserAbrechnungenQuery>(
+                          cache, 
+                         {query: GetAllUserAbrechnungenDocument},
                          _result,
                          (result, query) => {
-                             if(result.createBewohnerBetriebskosten.errors) {
-                                 return query
-                             } else {
-                                 return {
-                                    BewohnerBetribskostendata: result.GetGesamteAbrechnungQuery.BewohnerBetribskostendata,
-                                    getAllegemeinebrechnung: result.
-                                 }  
-                             }
-                         }
-
+                            if(!result.logout) {
+                                return query
+                            } else {
+                                return {
+                                    getAllUserAbrechnungen: null
+                                }  
+                            }
+                        }
                       )
-                  }, */
+                  },
+
+                  getAllUserAbrechnungen: (_result, args, cache, info) => {   
+                    betterUpdateQuery<LoginMutation, GetAllUserAbrechnungenQuery>(
+                    cache, 
+                   {query: GetAllUserAbrechnungenDocument},
+                   _result,
+                   () => ({getAllUserAbrechnungen: {}})
+                ) 
+              },
+
+
                   }
              }
          }),
-          fetchExchange],
+          fetchExchange], 
 }); 

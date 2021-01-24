@@ -1,0 +1,14 @@
+query getAllUserAbrechnungen
+{
+    getAllUserAbrechnungen {
+        errors {
+            field
+            message
+        }
+        AbrechnungsdataArray {
+            AbrechnungsId 
+            Start_Data
+            End_Data
+        } 
+    }
+}

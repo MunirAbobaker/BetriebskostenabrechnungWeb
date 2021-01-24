@@ -1,6 +1,5 @@
 import style from 'styled-theming';
 
-// change style  based on dark/light mode
 export const getBackground = style('mode', {
     light: '#e1e1e1',
     dark: '#262626'
@@ -21,8 +20,7 @@ export const getFromColor: any = style.variants('mode', 'variant', {
     }
 });
 
-// for button and cards 
-
+//  button and cards 
 export const getChildrenBackground = style.variants('mode', 'variant', {
     normal: {
         light: '#ffffff',

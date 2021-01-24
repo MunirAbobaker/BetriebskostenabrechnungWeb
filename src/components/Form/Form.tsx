@@ -5,7 +5,7 @@ import {
     useCreateInvoiceMutation,
     useCreateHeizkostenabrechnungMutation,
     useCreateEinzelabrechnungMutation,
-    useCreateBewohnerBetriebskostenMutation,
+    useCreateBewohnerBetriebskostenMutation, useGetGesamteAbrechnungQuery,
 } from "../../generated/graphql";
 import CustomizedButton from "../UI/CustomizedButton";
 import StyledForm from "./StyledForm";
@@ -22,15 +22,12 @@ import {
     PERSON,
     BEWOHNER,
 } from "../../utils/constants";
+import {convertToFloat} from "../../utils/convertToFloat";
 
 export interface SectionState {
     value: string;
     error: string;
 }
-
-const Display = () => (
-    <Route path="/" render={(props) => <h1>hallo Display</h1>}/>
-)
 
 const Form: React.FC<RouteComponentProps> = React.memo((props) => {
     const [startDate, setStartDate] = React.useState(new Date());
@@ -58,20 +55,19 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
         switch (section) {
             case "Allgemeine Fragen":
                 const sDate = new Date(startDate);
-                const startDay = sDate.getDay();
-                const startMonth = sDate.getMonth() + 1; // month starts with 0 (- _ -)
+                const startDay = 1;
+                const startMonth = sDate.getMonth() + 1;  
                 const startYear = sDate.getFullYear();
                 const startingDate = `${startYear}-${startMonth}-${startDay}`;
-                console.log("s", startingDate);
 
                 const eDate = new Date(endDate);
-                const endDay = eDate.getDay() + 1;
                 const endMonth = eDate.getMonth() + 1;
                 const endYear = eDate.getFullYear();
+                const endDay = new Date(endYear, endMonth, 0).getDate();
                 const endingDate = `${endYear}-${endMonth}-${endDay}`;
-                console.log("e", endingDate);
-                const monatliche_Abschlag: number = parseFloat(firstSection[0].value.replace(',', '.'));
-                const Wohnflaeche: number = parseFloat(firstSection[1].value.replace(',', '.'));
+                const monatliche_Abschlag: number = convertToFloat(firstSection[0].value);
+                const Wohnflaeche: number =  convertToFloat(firstSection[1].value);
+                
                 response = await createAbrechnung({
                     monatliche_Abschlag,
                     Wohnflaeche,
@@ -80,7 +76,6 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
                 });
 
                 if (response.data?.createAbrechnung.Abrechnungsdata) {
-                    console.log(response.data.createAbrechnung.Abrechnungsdata);
                     setSection("Heizkosten");
                 } else {
                     console.log("errors");
@@ -88,67 +83,47 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
                 }
                 break;
             case "Heizkosten":
-                response = await createHeizkosten({
-                    options: [
-                        {
-                            Kostenkonzept: "Heizungsgrundkosten",
-                            Verteilschluessel: parseFloat(firstSection[1].value.replace(',', '.')),
-                            Kosten_pro_Einheit: parseFloat(secondSection[0].value.replace(',', '.')),
-                        },
-                        {
-                            Kostenkonzept: "Verbrauchgrundkosten",
-                            Verteilschluessel: parseFloat(secondSection[1].value.replace(',', '.')),
-                            Kosten_pro_Einheit: parseFloat(secondSection[2].value.replace(',', '.')),
-                        },
-                    ],
-                });
-                if (response.data?.createHeizkosten.Abrechnungsdata) {
-                    setSection("Wasser");
-                } else {
-                    console.log("errors");
-                    console.log(response.data?.createHeizkosten.errors);
-                }
+                setSection("Wasser");
                 break;
             case "Wasser":
-                const WarmwasserResponse = await createHeizkosten({
-                    options: [
-                        {
-                            Kostenkonzept: "Heizungsgrundkosten",
-                            Verteilschluessel: parseFloat(firstSection[1].value.replace(',', '.')),
-                            Kosten_pro_Einheit: parseFloat(thirdSection[0].value.replace(',', '.')),
-                        },
-                        {
-                            Kostenkonzept: "Verbrauchgrundkosten",
-                            Verteilschluessel: parseFloat(thirdSection[2].value.replace(',', '.')),
-                            Kosten_pro_Einheit: parseFloat(thirdSection[1].value.replace(',', '.')),
-                        },
-                    ],
-                });
-                if (WarmwasserResponse.data?.createHeizkosten.Abrechnungsdata) {
-                    console.log(WarmwasserResponse.data?.createHeizkosten);
-                    setSection("Warmwasser/Abwasser");
-                } else {
-                    console.log("errors");
-                    console.log(WarmwasserResponse.data?.createHeizkosten.errors);
-                }
+                setSection("Warmwasser/Abwasser");
                 break;
             case "Warmwasser/Abwasser":
                 const AbwasserResponse = await createHeizkosten({
                     options: [
                         {
-                            Kostenkonzept: "Heizungsgrundkosten",
-                            Verteilschluessel: parseFloat(forthSection[0].value.replace(',', '.')),
-                            Kosten_pro_Einheit: parseFloat(forthSection[1].value.replace(',', '.')),
+                            Kostenkonzept: "Heiz-Grundkosten",
+                            Verteilschluessel: convertToFloat(firstSection[1].value),
+                            Kosten_pro_Einheit: convertToFloat(secondSection[0].value),
                         },
                         {
-                            Kostenkonzept: "Verbrauchgrundkosten",
-                            Verteilschluessel: parseFloat(forthSection[0].value.replace(',', '.')),
-                            Kosten_pro_Einheit: parseFloat(forthSection[2].value.replace(',', '.')),
+                            Kostenkonzept: "Heiz-Verbrauchskosten",
+                            Verteilschluessel: convertToFloat(secondSection[1].value),
+                            Kosten_pro_Einheit: convertToFloat(secondSection[2].value),
+                        },
+                        {
+                            Kostenkonzept: "Wasser-Grundkosten",
+                            Verteilschluessel: convertToFloat(firstSection[1].value),
+                            Kosten_pro_Einheit: convertToFloat(thirdSection[0].value),
+                        },
+                        {
+                            Kostenkonzept: "Wasser-Verbrauchskosten",
+                            Verteilschluessel: convertToFloat(thirdSection[2].value),
+                            Kosten_pro_Einheit: convertToFloat(thirdSection[1].value),
+                        },
+                        {
+                            Kostenkonzept: "Warmwasser-Grundkosten",
+                            Verteilschluessel: convertToFloat(forthSection[0].value),
+                            Kosten_pro_Einheit: convertToFloat(forthSection[1].value),
+                        },
+                        {
+                            Kostenkonzept: "Warmwasser-Verbrauchskosten",
+                            Verteilschluessel: convertToFloat(forthSection[0].value),
+                            Kosten_pro_Einheit: convertToFloat(forthSection[2].value),
                         },
                     ],
                 });
                 if (AbwasserResponse.data?.createHeizkosten.Abrechnungsdata) {
-                    console.log(AbwasserResponse.data?.createHeizkosten);
                     setSection("Einzelabrechnung Teil1");
                 } else {
                     console.log("errors");
@@ -164,108 +139,92 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
                         {
                             Abrechnungsposition: "Heizkosten/Wasser",
                             verteilt_nach: "Ext. Heizung",
-                            Gesamte_Einheiten: parseFloat(fifthSection[0].value.replace(',', '.')), //13
+                            Gesamte_Einheiten: convertToFloat(fifthSection[0].value), //13
                             Einheit_Anteil: 0, // rechnung in B.E -> heizkosten tabel
-                            Gesamte_Kosten: parseFloat(fifthSection[0].value.replace(',', '.')),
+                            Gesamte_Kosten: convertToFloat(fifthSection[0].value),
                             Kosten_Anteil: 0, // rechnung in B.E -> heizkosten tabel
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0, // circle with pen 892
                         },
                         {
                             Abrechnungsposition: "Hausreinigung",
                             verteilt_nach: "Wohnfläche",
-                            Gesamte_Einheiten: parseFloat(fifthSection[1].value.replace(',', '.')), //14
-                            Einheit_Anteil: parseFloat(firstSection[1].value.replace(',', '.')),
-                            Gesamte_Kosten: parseFloat(fifthSection[2].value.replace(',', '.')), //15
+                            Gesamte_Einheiten: convertToFloat(fifthSection[1].value), //14
+                            Einheit_Anteil: convertToFloat(firstSection[1].value),
+                            Gesamte_Kosten: convertToFloat(fifthSection[2].value), //15
                             Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0, // 624,26
-                            Umlagekosten: 0,
                         },
                         {
                             Abrechnungsposition: "Fahrstuhl",
                             verteilt_nach: "Wohnfläche",
-                            Gesamte_Einheiten: parseFloat(fifthSection[1].value.replace(',', '.')),
-                            Einheit_Anteil: parseFloat(firstSection[1].value.replace(',', '.')),
-                            Gesamte_Kosten: parseFloat(fifthSection[3].value.replace(',', '.')), //16
-                            Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0,
+                            Gesamte_Einheiten: convertToFloat(fifthSection[1].value),
+                            Einheit_Anteil: convertToFloat(firstSection[1].value),
+                            Gesamte_Kosten: convertToFloat(fifthSection[3].value), //16
+                            Kosten_Anteil: 0, // rechnung in B.E 
                         },
                         {
                             Abrechnungsposition: "Strom",
                             verteilt_nach: "Wohnfläche",
-                            Gesamte_Einheiten: parseFloat(fifthSection[1].value.replace(',', '.')),
-                            Einheit_Anteil: parseFloat(firstSection[1].value.replace(',', '.')),
-                            Gesamte_Kosten: parseFloat(fifthSection[4].value), //17
-                            Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0,
+                            Gesamte_Einheiten: convertToFloat(fifthSection[1].value),
+                            Einheit_Anteil: convertToFloat(firstSection[1].value),
+                            Gesamte_Kosten: convertToFloat(fifthSection[4].value), //17  // 
+                            Kosten_Anteil: 0, // rechnung in B.E 
                         },
                         {
                             Abrechnungsposition: "Müllabfuhr",
                             verteilt_nach: "Wohnfläche",
-                            Gesamte_Einheiten: parseFloat(fifthSection[1].value.replace(',', '.')),
-                            Einheit_Anteil: parseFloat(firstSection[1].value.replace(',', '.')),
-                            Gesamte_Kosten: parseFloat(fifthSection[5].value.replace(',', '.')), //18
-                            Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0,
+                            Gesamte_Einheiten: convertToFloat(fifthSection[1].value),
+                            Einheit_Anteil: convertToFloat(firstSection[1].value),
+                            Gesamte_Kosten: convertToFloat(fifthSection[5].value), //18
+                            Kosten_Anteil: 0, // rechnung in B.E 
                         },
                         {
-                            Abrechnungsposition: "Versicherungs-gebäude",
+                            Abrechnungsposition: "Versicherung-Gebäude",
                             verteilt_nach: "Wohnfläche",
-                            Gesamte_Einheiten: parseFloat(fifthSection[1].value.replace(',', '.')),
-                            Einheit_Anteil: parseFloat(firstSection[1].value.replace(',', '.')),
-                            Gesamte_Kosten: parseFloat(fifthSection[6].value.replace(',', '.')), //19
-                            Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0,
+                            Gesamte_Einheiten: convertToFloat(fifthSection[1].value),
+                            Einheit_Anteil: convertToFloat(firstSection[1].value),
+                            Gesamte_Kosten: convertToFloat(fifthSection[6].value), //19
+                            Kosten_Anteil: 0, // rechnung in B.E 
                         },
                         {
-                            Abrechnungsposition: "Niederschlagwasser",
+                            Abrechnungsposition: "Niederschlagswasser",
                             verteilt_nach: "Eigentumsanteil",
-                            Gesamte_Einheiten: parseFloat(sixthSection[0].value.replace(',', '.')), // 20
-                            Einheit_Anteil: parseFloat(sixthSection[1].value.replace(',', '.')), // 21
-                            Gesamte_Kosten: parseFloat(fifthSection[7].value.replace(',', '.')), //19
-                            Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0,
+                            Gesamte_Einheiten: convertToFloat(sixthSection[0].value), // 20
+                            Einheit_Anteil: convertToFloat(sixthSection[1].value), // 21
+                            Gesamte_Kosten: convertToFloat(fifthSection[7].value), //19
+                            Kosten_Anteil: 0, // rechnung in B.E 
                         },
                         {
                             Abrechnungsposition: "Bankgebühren",
                             verteilt_nach: "Eigentumsanteil",
-                            Gesamte_Einheiten: parseFloat(sixthSection[0].value.replace(',', '.')), // 20
-                            Einheit_Anteil: parseFloat(sixthSection[1].value.replace(',', '.')), // 21
-                            Gesamte_Kosten: parseFloat(sixthSection[4].value.replace(',', '.')), //25
-                            Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0,
+                            Gesamte_Einheiten: convertToFloat(sixthSection[0].value), // 20
+                            Einheit_Anteil: convertToFloat(sixthSection[1].value), // 21
+                            Gesamte_Kosten: convertToFloat(sixthSection[4].value), //25
+                            Kosten_Anteil: 0, // rechnung in B.E 
                         },
                         {
                             Abrechnungsposition: "Verwalter",
                             verteilt_nach: "Einheiten",
-                            Gesamte_Einheiten: parseFloat(sixthSection[2].value.replace(',', '.')), // 22
-                            Einheit_Anteil: parseFloat(sixthSection[3].value.replace(',', '.')), // 23
-                            Gesamte_Kosten: parseFloat(sixthSection[5].value.replace(',', '.')), //26
-                            Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0,
+                            Gesamte_Einheiten: convertToFloat(sixthSection[2].value), // 22
+                            Einheit_Anteil: convertToFloat(sixthSection[3].value), // 23
+                            Gesamte_Kosten: convertToFloat(sixthSection[5].value), //26
+                            Kosten_Anteil: 0, // rechnung in B.E 
                         },
                         {
                             Abrechnungsposition: "Instandhaltung",
                             verteilt_nach: "Eigentumsanteil",
-                            Gesamte_Einheiten: parseFloat(sixthSection[0].value.replace(',', '.')), // 20
-                            Einheit_Anteil: parseFloat(sixthSection[1].value.replace(',', '.')), // 21
-                            Gesamte_Kosten: parseFloat(sixthSection[6].value.replace(',', '.')), //26
-                            Kosten_Anteil: 0, // rechnung in B.E
-                            Nichtumlagekosten: 0,
-                            Umlagekosten: 0,
+                            Gesamte_Einheiten: convertToFloat(sixthSection[0].value), // 20
+                            Einheit_Anteil: convertToFloat(sixthSection[1].value), // 21
+                            Gesamte_Kosten: convertToFloat(sixthSection[6].value), //26
+                            Kosten_Anteil: 0, // rechnung in B.E 
                         },
                     ],
                 });
-                console.log(response.data!);
+                console.log(response.data?.createEinzelabrechnung)
                 if (response.data?.createEinzelabrechnung.Einzelabrechnungsdata) {
-                    setSection("Bewohner/Eigentümer");
+                   //props.history.push("/display");
+                   props.history.push({
+                    pathname: "/display", 
+                    state: "update"
+                    });
                 } else {
                     console.log("errors");
                     console.log(response.data?.createEinzelabrechnung.errors);
@@ -276,26 +235,38 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
                 if (checked === true) {
                     setSection("Bewohner");
                 } else {
+                    props.history.push({
+                        pathname: "/display", 
+                        state: "update"
+                        });
                 }
                 break;
             case "Bewohner":
 
                 response = await createBewohnerBetriebskosten({
                     Position: seventhSection[0].value,
-                    Betrag: parseFloat(seventhSection[1].value)
+                    Betrag: convertToFloat(seventhSection[1].value)
                 });
                 if (response.data?.createBewohnerBetriebskosten) {
-                    console.log(response.data?.createBewohnerBetriebskosten.BewohnerBetribskostendata);
                     props.history.push("/display");
                 } else {
                     console.log("errors");
                     console.log(response.data?.createBewohnerBetriebskosten.errors);
                 }
-                break;
-            case "gesamte Abrechnung":
-            
-                break;
+                break
         }
+    };
+
+    const change = (
+        index: number,
+        e: React.ChangeEvent<HTMLInputElement>,
+        useSetState : (value: React.SetStateAction<SectionState[]>) => void,
+        state:  SectionState[]
+) => {
+        const newValue = {value: e.target.value, error: ""};
+        let newArr = [...state];
+        newArr[index] = newValue;
+        useSetState(newArr);
     };
 
     const onChangeHandler = (
@@ -305,7 +276,6 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
         const newValue = {value: e.target.value, error: ""};
         let newArr = [...firstSection];
         newArr[index] = newValue;
-        console.log(newArr);
         setFirstSection(newArr);
     };
 
@@ -316,7 +286,6 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
         const newValue = {value: e.target.value, error: ""};
         let newArr = [...secondSection];
         newArr[index] = newValue;
-        console.log(newArr);
         setSecondSection(newArr);
     };
 
@@ -327,7 +296,6 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
         const newValue = {value: e.target.value, error: ""};
         let newArr = [...thirdSection];
         newArr[index] = newValue;
-        console.log(newArr);
         setThirdSection(newArr);
     };
 
@@ -338,18 +306,16 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
         const newValue = {value: e.target.value, error: ""};
         let newArr = [...forthSection];
         newArr[index] = newValue;
-        console.log(newArr);
         setforthSection(newArr);
     };
 
-    const onChangeFithSecHandler = (
+    const onChangeFifthSecHandler = (
         index: number,
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const newValue = {value: e.target.value, error: ""};
         let newArr = [...fifthSection];
         newArr[index] = newValue;
-        console.log(newArr);
         setfifthSection(newArr);
     };
 
@@ -360,13 +326,11 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
         const newValue = {value: e.target.value, error: ""};
         let newArr = [...sixthSection];
         newArr[index] = newValue;
-        console.log(newArr);
         setSixthSection(newArr);
     };
 
     const checkboxHandler = (name: string, value: boolean) => {
         setChecked(value);
-        console.log(name, value);
     };
     const onChangeSeventhSecHandler = (
         index: number,
@@ -375,7 +339,6 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
         const newValue = {value: e.target.value, error: ""};
         let newArr = [...seventhSection];
         newArr[index] = newValue;
-        console.log(newArr);
         setSeventhSection(newArr);
     };
 
@@ -393,8 +356,7 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
                             value={
                                 firstSection.length > index ? firstSection[index].value : ""
                             }
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                onChangeHandler(index, e)
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => change(index, e,setFirstSection, firstSection )
                             }
                             error={
                                 firstSection.length > index ? firstSection[index].error : ""
@@ -488,7 +450,7 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
                     sectionMetaData={EINZELABRECHNUNGT1.data}
                     section={section}
                     sectionBody={fifthSection}
-                    onChangeInputHandler={onChangeFithSecHandler}
+                    onChangeInputHandler={onChangeFifthSecHandler}
                 />
             );
             break;
@@ -538,7 +500,3 @@ const Form: React.FC<RouteComponentProps> = React.memo((props) => {
 });
 
 export default Form;
-
-/* setTimespan(prevState => (
-            {...prevState, value: newValue, }
-        )); */

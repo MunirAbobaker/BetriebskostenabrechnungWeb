@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-
-import Wrapper from "./Card/Wrapper";
 import Card from "./Card/Card";
 import { ThemeConsumer } from "styled-components";
 import { Card as StyledCard } from "../../helpers/Button";
@@ -41,6 +39,10 @@ class Cards extends Component<CardsProps> {
                       this.props.userLoggedIn && card.id === "register"
                         ? "NotAllowed"
                         : ""
+                        || (!this.props.userLoggedIn && card.id === "create") ? "NotAllowed"
+                        : ""
+                        || (!this.props.userLoggedIn && card.id === "templates") ? "NotAllowed"
+                        : ""
                     }
                   >
                     <Card
@@ -59,8 +61,3 @@ class Cards extends Component<CardsProps> {
 
 export default Cards;
 
-{
-  /* <Wrapper > 
-                    <Card cardInfos={card} userLoggedIn={this.props.userLoggedIn} />
-                 </Wrapper> */
-}

@@ -6,13 +6,13 @@ import {Card as StyledCard} from '../../../helpers/Button';
 
 export default function Wrapper(props) {
     return (
-        <h1>not used</h1>
-       /*  <ThemeConsumer>
+       
+          <ThemeConsumer>
             {theme => (
                 <StyledCard variant="primary">
                     {props.children}
                 </StyledCard>)}
-        </ThemeConsumer> */
+        </ThemeConsumer> 
     )
 }
 

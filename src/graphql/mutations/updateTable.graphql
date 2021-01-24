@@ -1,0 +1,60 @@
+mutation UpdateTable(
+    $Aktion: String
+    $AbrechnungsInput: AbrechnungType!,
+    $HeizkostenAbrechnungsInputArray:  [HeizkostenType!]!,
+    $EinzelabrechnungsInputArray:  [EinzelabrechnungType!]!,
+    $BewohnerBetribsInputdata: BewohnerBetriebskostenType!,
+    $Betribskostenabrechnung: Float,
+    $Nebenkostenvorrauszahlung: Float,
+    $Grundsteuer: Float,
+    $Rauchmelder: Float,
+    $zuZahlendeKosten: Float,
+    $wirdUeberwiesen: Float,
+
+) {
+
+    updateTable(
+        options: {
+            Aktion: $Aktion
+            Betribskostenabrechnung: $Betribskostenabrechnung
+            Nebenkostenvorrauszahlung: $Nebenkostenvorrauszahlung
+            Grundsteuer: $Grundsteuer
+            Rauchmelder: $Rauchmelder
+            zuZahlendeKosten: $zuZahlendeKosten
+            wirdUeberwiesen: $wirdUeberwiesen
+            HeizkostenAbrechnungsInputArray: $HeizkostenAbrechnungsInputArray
+            AbrechnungsInput: $AbrechnungsInput
+            EinzelabrechnungsInputArray: $EinzelabrechnungsInputArray
+            BewohnerBetribsInputdata:  $BewohnerBetribsInputdata
+        }
+    ) {
+        errors {
+            ...RegularError
+        }
+
+        Betribskostenabrechnung
+        Nebenkostenvorrauszahlung
+        Grundsteuer
+        Rauchmelder
+        zuZahlendeKosten
+        wirdUeberwiesen
+
+        AbrechnungsdataArray {
+            ...AbrechnungsResponse
+        }
+        HeizkostenAbrechnungsdataArray {
+            ...HeizkostenabrechnungsResponse
+        }
+
+        EinzelabrechnungsdataArray {
+           ...Einzelabrechnungsergebnisse
+        }
+
+        BewohnerBetribskostendata {
+            Position
+            Betrag
+        }
+
+
+    }
+}

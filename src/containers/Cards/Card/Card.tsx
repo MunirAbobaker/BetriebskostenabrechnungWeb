@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React  from "react";
 import { Link } from "react-router-dom";
 const path = require("path");
 import { useLogoutMutation } from "../../../generated/graphql";
@@ -37,11 +37,7 @@ const Card: React.FC<CardProps> = ({ ...props }) => {
       ) : (
         <Link
           to={"/" + props.cardInfos.id}
-          className={
-            props.userLoggedIn && props.cardInfos.id === "register"
-              ? "NotClickable"
-              : ""
-          }
+        
         >
           <img
             className={"images"}

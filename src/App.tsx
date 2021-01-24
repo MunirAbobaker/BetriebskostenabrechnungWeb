@@ -14,13 +14,6 @@ import {
   getFromColor,
 } from "./utils/getThemeColors";
 
-// shift + alt + f => pretty printer
-// change style of App based on this fct
-// props => props.theme.mode === 'dark' ? '#EEE' : '#111'
-
-/* .login {
-  background-color:${getFromColor};
-} */
 const GlobalStyle = createGlobalStyle`
     body {
       background-color: ${getBackground};

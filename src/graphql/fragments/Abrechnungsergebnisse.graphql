@@ -3,3 +3,15 @@ fragment Abrechnungsergebnisse on Abrechnung {
   UserId
   Abrechnungszeitraum
 }
+
+fragment Einzelabrechnungsergebnisse on Einzelabrechnung {
+            id
+            Abrechnungsposition
+            verteilt_nach
+            Gesamte_Einheiten
+            Einheit_Anteil
+            Einheit
+            Gesamte_Kosten 
+            Kosten_Anteil
+            
+}

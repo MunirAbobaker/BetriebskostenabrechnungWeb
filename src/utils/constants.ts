@@ -289,3 +289,23 @@ export const  BEWOHNER = {
     }, 
 ],
 }
+
+
+export const ABRECHNUNG_HEADER = [
+  {
+    name: "monatliche_Abschlag",
+    prop: "monatliche_Abschlag",
+  },
+  {
+    name: "Wohnfläche",
+    prop: "Wohnflaeche",
+  },
+  {
+    name: "Start Data",
+    prop: "Start_Data",
+  },
+  {
+    name: "End Data",
+    prop: "End_Data",
+  }
+]

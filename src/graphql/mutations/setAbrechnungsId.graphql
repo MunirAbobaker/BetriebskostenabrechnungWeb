@@ -1,0 +1,7 @@
+mutation setAbrechnungId( 
+   $AbrechnungsId: Float! 
+) {
+   setAbrechnungId(
+       AbrechnungsId: $AbrechnungsId 
+  )
+}

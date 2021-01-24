@@ -1,0 +1,8 @@
+fragment AbrechnungsResponse on Abrechnung {
+     AbrechnungsId
+      monatliche_Abschlag
+      Abrechnungszeitraum
+      Wohnflaeche
+      Start_Data
+      End_Data
+}

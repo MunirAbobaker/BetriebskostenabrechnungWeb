@@ -16,16 +16,16 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String'];
   me?: Maybe<User>;
   getHeizkosten: Heizkostenabrechnung;
-  getAbrechnung: AbrechnungResponse;
-  getAbrechnungen: Array<AbrechnungResponse>;
   getEinzelabrechnung: Einzelabrechnung;
   getEinzelabrechnungen: Array<Einzelabrechnung>;
-  getAllegemeinebrechnung: AllgemeineResponse;
   getBewohnerBetriebskostenAbrechnung?: Maybe<BewohnerBetriebskostenResponse>;
   getBewohnerBetriebskostenAbrechnungen?: Maybe<Array<BewohnerBetriebskostenResponse>>;
+  getAbrechnung: AbrechnungResponse;
+  getAbrechnungen: Array<AbrechnungResponse>;
+  getAllUserAbrechnungen: AbrechnungResponse;
+  getAllegemeinebrechnung: AllgemeineResponse;
 };
 
 export type User = {
@@ -52,17 +52,48 @@ export type Heizkostenabrechnung = {
   Gesamt_in_Euro: Scalars['Float'];
 };
 
-export type AbrechnungResponse = {
-  __typename?: 'AbrechnungResponse';
+export type Einzelabrechnung = {
+  __typename?: 'Einzelabrechnung';
+  id: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  AbrechnungsId: Scalars['String'];
+  Abrechnungsposition: Scalars['String'];
+  verteilt_nach: Scalars['String'];
+  Gesamte_Einheiten: Scalars['Float'];
+  Einheit_Anteil: Scalars['Float'];
+  Einheit: Scalars['String'];
+  Gesamte_Kosten: Scalars['Float'];
+  Kosten_Anteil: Scalars['Float'];
+};
+
+export type BewohnerBetriebskostenResponse = {
+  __typename?: 'BewohnerBetriebskostenResponse';
   errors?: Maybe<Array<FieldError>>;
-  Abrechnungsdata?: Maybe<Abrechnung>;
-  AbrechnungsdataArray?: Maybe<Array<Abrechnung>>;
+  BewohnerBetribskostendata?: Maybe<BewohnerBetriebskosten>;
 };
 
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
   message: Scalars['String'];
+};
+
+export type BewohnerBetriebskosten = {
+  __typename?: 'BewohnerBetriebskosten';
+  id: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  AbrechnungsId: Scalars['String'];
+  Position: Scalars['String'];
+  Betrag: Scalars['Float'];
+};
+
+export type AbrechnungResponse = {
+  __typename?: 'AbrechnungResponse';
+  errors?: Maybe<Array<FieldError>>;
+  Abrechnungsdata?: Maybe<Abrechnung>;
+  AbrechnungsdataArray?: Maybe<Array<Abrechnung>>;
 };
 
 export type Abrechnung = {
@@ -78,45 +109,19 @@ export type Abrechnung = {
   End_Data: Scalars['String'];
 };
 
-export type Einzelabrechnung = {
-  __typename?: 'Einzelabrechnung';
-  id: Scalars['Float'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  AbrechnungsId: Scalars['String'];
-  Abrechnungsposition: Scalars['String'];
-  verteilt_nach: Scalars['String'];
-  Gesamte_Einheiten: Scalars['Float'];
-  Einheit_Anteil: Scalars['Float'];
-  Einheit: Scalars['String'];
-  Gesamte_Kosten: Scalars['Float'];
-  Kosten_Anteil: Scalars['Float'];
-  Umlagekosten: Scalars['Float'];
-  Nichtumlagekosten: Scalars['Float'];
-};
-
 export type AllgemeineResponse = {
   __typename?: 'AllgemeineResponse';
+  id?: Maybe<Scalars['String']>;
+  Betribskostenabrechnung?: Maybe<Scalars['Float']>;
+  Nebenkostenvorrauszahlung?: Maybe<Scalars['Float']>;
+  Grundsteuer?: Maybe<Scalars['Float']>;
+  Rauchmelder?: Maybe<Scalars['Float']>;
+  zuZahlendeKosten?: Maybe<Scalars['Float']>;
+  wirdUeberwiesen?: Maybe<Scalars['Float']>;
   errors?: Maybe<Array<FieldError>>;
   AbrechnungsdataArray?: Maybe<Array<Abrechnung>>;
   HeizkostenAbrechnungsdataArray?: Maybe<Array<Heizkostenabrechnung>>;
   EinzelabrechnungsdataArray?: Maybe<Array<Einzelabrechnung>>;
-  BewohnerBetribskostendata?: Maybe<BewohnerBetriebskosten>;
-};
-
-export type BewohnerBetriebskosten = {
-  __typename?: 'BewohnerBetriebskosten';
-  id: Scalars['Float'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-  AbrechnungsId: Scalars['String'];
-  Position: Scalars['String'];
-  Betrag: Scalars['Float'];
-};
-
-export type BewohnerBetriebskostenResponse = {
-  __typename?: 'BewohnerBetriebskostenResponse';
-  errors?: Maybe<Array<FieldError>>;
   BewohnerBetribskostendata?: Maybe<BewohnerBetriebskosten>;
 };
 
@@ -129,12 +134,13 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   createHeizkosten: HeizkostenabrechnungsResponse;
   updateHeizkosten: Scalars['Boolean'];
-  createAbrechnung: AbrechnungResponse;
-  updateAbrechnung: Scalars['Boolean'];
   createEinzelabrechnung: EinzelabrechnungsResponse;
   updateEinzelabrechnung: Scalars['Boolean'];
   createBewohnerBetriebskosten: BewohnerBetriebskostenResponse;
   updateBewohnerBetriebskostenAbrechnung: Scalars['Boolean'];
+  createAbrechnung: AbrechnungResponse;
+  setAbrechnungId: Scalars['Float'];
+  updateTable: TableResponseType;
 };
 
 
@@ -169,16 +175,6 @@ export type MutationUpdateHeizkostenArgs = {
 };
 
 
-export type MutationCreateAbrechnungArgs = {
-  options: AbrechnungType;
-};
-
-
-export type MutationUpdateAbrechnungArgs = {
-  options: AbrechnungType;
-};
-
-
 export type MutationCreateEinzelabrechnungArgs = {
   options: Array<EinzelabrechnungType>;
 };
@@ -196,6 +192,21 @@ export type MutationCreateBewohnerBetriebskostenArgs = {
 
 export type MutationUpdateBewohnerBetriebskostenAbrechnungArgs = {
   options: BewohnerBetriebskostenType;
+};
+
+
+export type MutationCreateAbrechnungArgs = {
+  options: AbrechnungType;
+};
+
+
+export type MutationSetAbrechnungIdArgs = {
+  AbrechnungsId: Scalars['Float'];
+};
+
+
+export type MutationUpdateTableArgs = {
+  options: TableInputType;
 };
 
 export type UserResponse = {
@@ -231,13 +242,6 @@ export type HeizkostenType = {
   Kosten_pro_Einheit: Scalars['Float'];
 };
 
-export type AbrechnungType = {
-  monatliche_Abschlag: Scalars['Float'];
-  Wohnflaeche: Scalars['Float'];
-  Start_Data: Scalars['String'];
-  End_Data: Scalars['String'];
-};
-
 export type EinzelabrechnungsResponse = {
   __typename?: 'EinzelabrechnungsResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -252,8 +256,6 @@ export type EinzelabrechnungType = {
   Einheit?: Maybe<Scalars['String']>;
   Gesamte_Kosten: Scalars['Float'];
   Kosten_Anteil: Scalars['Float'];
-  Umlagekosten: Scalars['Float'];
-  Nichtumlagekosten: Scalars['Float'];
 };
 
 export type BewohnerBetriebskostenType = {
@@ -261,9 +263,61 @@ export type BewohnerBetriebskostenType = {
   Betrag: Scalars['Float'];
 };
 
+export type AbrechnungType = {
+  monatliche_Abschlag: Scalars['Float'];
+  Wohnflaeche: Scalars['Float'];
+  Start_Data: Scalars['String'];
+  End_Data: Scalars['String'];
+};
+
+export type TableResponseType = {
+  __typename?: 'TableResponseType';
+  id?: Maybe<Scalars['String']>;
+  Betribskostenabrechnung?: Maybe<Scalars['Float']>;
+  Nebenkostenvorrauszahlung?: Maybe<Scalars['Float']>;
+  Grundsteuer?: Maybe<Scalars['Float']>;
+  Rauchmelder?: Maybe<Scalars['Float']>;
+  zuZahlendeKosten?: Maybe<Scalars['Float']>;
+  wirdUeberwiesen?: Maybe<Scalars['Float']>;
+  errors?: Maybe<Array<FieldError>>;
+  AbrechnungsdataArray?: Maybe<Array<Abrechnung>>;
+  HeizkostenAbrechnungsdataArray?: Maybe<Array<Heizkostenabrechnung>>;
+  EinzelabrechnungsdataArray?: Maybe<Array<Einzelabrechnung>>;
+  BewohnerBetribskostendata?: Maybe<BewohnerBetriebskosten>;
+};
+
+export type TableInputType = {
+  Aktion?: Maybe<Scalars['String']>;
+  Betribskostenabrechnung?: Maybe<Scalars['Float']>;
+  Nebenkostenvorrauszahlung?: Maybe<Scalars['Float']>;
+  Grundsteuer?: Maybe<Scalars['Float']>;
+  Rauchmelder?: Maybe<Scalars['Float']>;
+  zuZahlendeKosten?: Maybe<Scalars['Float']>;
+  wirdUeberwiesen?: Maybe<Scalars['Float']>;
+  AbrechnungsInput?: Maybe<AbrechnungType>;
+  HeizkostenAbrechnungsInputArray?: Maybe<Array<HeizkostenType>>;
+  EinzelabrechnungsInputArray?: Maybe<Array<EinzelabrechnungType>>;
+  BewohnerBetribsInputdata?: Maybe<BewohnerBetriebskostenType>;
+};
+
+export type AbrechnungsResponseFragment = (
+  { __typename?: 'Abrechnung' }
+  & Pick<Abrechnung, 'AbrechnungsId' | 'monatliche_Abschlag' | 'Abrechnungszeitraum' | 'Wohnflaeche' | 'Start_Data' | 'End_Data'>
+);
+
 export type AbrechnungsergebnisseFragment = (
   { __typename?: 'Abrechnung' }
   & Pick<Abrechnung, 'AbrechnungsId' | 'UserId' | 'Abrechnungszeitraum'>
+);
+
+export type EinzelabrechnungsergebnisseFragment = (
+  { __typename?: 'Einzelabrechnung' }
+  & Pick<Einzelabrechnung, 'id' | 'Abrechnungsposition' | 'verteilt_nach' | 'Gesamte_Einheiten' | 'Einheit_Anteil' | 'Einheit' | 'Gesamte_Kosten' | 'Kosten_Anteil'>
+);
+
+export type HeizkostenabrechnungsResponseFragment = (
+  { __typename?: 'Heizkostenabrechnung' }
+  & Pick<Heizkostenabrechnung, 'id' | 'Kostenkonzept' | 'Verteilschluessel_Einheit' | 'Verteilschluessel' | 'Kosten_pro_Einheit' | 'Betrag_in_Euro' | 'Gesamt_in_Euro'>
 );
 
 export type HeizkostenergebnisseFragment = (
@@ -436,6 +490,72 @@ export type RegisterMutation = (
   ) }
 );
 
+export type SetAbrechnungIdMutationVariables = Exact<{
+  AbrechnungsId: Scalars['Float'];
+}>;
+
+
+export type SetAbrechnungIdMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'setAbrechnungId'>
+);
+
+export type UpdateTableMutationVariables = Exact<{
+  Aktion?: Maybe<Scalars['String']>;
+  AbrechnungsInput: AbrechnungType;
+  HeizkostenAbrechnungsInputArray: Array<HeizkostenType>;
+  EinzelabrechnungsInputArray: Array<EinzelabrechnungType>;
+  BewohnerBetribsInputdata: BewohnerBetriebskostenType;
+  Betribskostenabrechnung?: Maybe<Scalars['Float']>;
+  Nebenkostenvorrauszahlung?: Maybe<Scalars['Float']>;
+  Grundsteuer?: Maybe<Scalars['Float']>;
+  Rauchmelder?: Maybe<Scalars['Float']>;
+  zuZahlendeKosten?: Maybe<Scalars['Float']>;
+  wirdUeberwiesen?: Maybe<Scalars['Float']>;
+}>;
+
+
+export type UpdateTableMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTable: (
+    { __typename?: 'TableResponseType' }
+    & Pick<TableResponseType, 'Betribskostenabrechnung' | 'Nebenkostenvorrauszahlung' | 'Grundsteuer' | 'Rauchmelder' | 'zuZahlendeKosten' | 'wirdUeberwiesen'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & RegularErrorFragment
+    )>>, AbrechnungsdataArray?: Maybe<Array<(
+      { __typename?: 'Abrechnung' }
+      & AbrechnungsResponseFragment
+    )>>, HeizkostenAbrechnungsdataArray?: Maybe<Array<(
+      { __typename?: 'Heizkostenabrechnung' }
+      & HeizkostenabrechnungsResponseFragment
+    )>>, EinzelabrechnungsdataArray?: Maybe<Array<(
+      { __typename?: 'Einzelabrechnung' }
+      & EinzelabrechnungsergebnisseFragment
+    )>>, BewohnerBetribskostendata?: Maybe<(
+      { __typename?: 'BewohnerBetriebskosten' }
+      & Pick<BewohnerBetriebskosten, 'Position' | 'Betrag'>
+    )> }
+  ) }
+);
+
+export type GetAllUserAbrechnungenQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllUserAbrechnungenQuery = (
+  { __typename?: 'Query' }
+  & { getAllUserAbrechnungen: (
+    { __typename?: 'AbrechnungResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, AbrechnungsdataArray?: Maybe<Array<(
+      { __typename?: 'Abrechnung' }
+      & Pick<Abrechnung, 'AbrechnungsId' | 'Start_Data' | 'End_Data'>
+    )>> }
+  ) }
+);
+
 export type GetGesamteAbrechnungQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -443,6 +563,7 @@ export type GetGesamteAbrechnungQuery = (
   { __typename?: 'Query' }
   & { getAllegemeinebrechnung: (
     { __typename?: 'AllgemeineResponse' }
+    & Pick<AllgemeineResponse, 'id' | 'Betribskostenabrechnung' | 'Nebenkostenvorrauszahlung' | 'Grundsteuer' | 'Rauchmelder' | 'zuZahlendeKosten' | 'wirdUeberwiesen'>
     & { errors?: Maybe<Array<(
       { __typename?: 'FieldError' }
       & Pick<FieldError, 'field' | 'message'>
@@ -451,7 +572,7 @@ export type GetGesamteAbrechnungQuery = (
       & Pick<Abrechnung, 'AbrechnungsId' | 'monatliche_Abschlag' | 'Wohnflaeche' | 'Start_Data' | 'End_Data'>
     )>>, EinzelabrechnungsdataArray?: Maybe<Array<(
       { __typename?: 'Einzelabrechnung' }
-      & Pick<Einzelabrechnung, 'id' | 'Abrechnungsposition' | 'verteilt_nach' | 'Gesamte_Einheiten' | 'Gesamte_Kosten' | 'Einheit_Anteil' | 'Kosten_Anteil' | 'Einheit'>
+      & Pick<Einzelabrechnung, 'id' | 'Abrechnungsposition' | 'verteilt_nach' | 'Gesamte_Einheiten' | 'Einheit_Anteil' | 'Einheit' | 'Gesamte_Kosten' | 'Kosten_Anteil'>
     )>>, HeizkostenAbrechnungsdataArray?: Maybe<Array<(
       { __typename?: 'Heizkostenabrechnung' }
       & Pick<Heizkostenabrechnung, 'id' | 'Kostenkonzept' | 'Verteilschluessel_Einheit' | 'Verteilschluessel' | 'Kosten_pro_Einheit' | 'Betrag_in_Euro' | 'Gesamt_in_Euro'>
@@ -473,11 +594,45 @@ export type MeQuery = (
   )> }
 );
 
+export const AbrechnungsResponseFragmentDoc = gql`
+    fragment AbrechnungsResponse on Abrechnung {
+  AbrechnungsId
+  monatliche_Abschlag
+  Abrechnungszeitraum
+  Wohnflaeche
+  Start_Data
+  End_Data
+}
+    `;
 export const AbrechnungsergebnisseFragmentDoc = gql`
     fragment Abrechnungsergebnisse on Abrechnung {
   AbrechnungsId
   UserId
   Abrechnungszeitraum
+}
+    `;
+export const EinzelabrechnungsergebnisseFragmentDoc = gql`
+    fragment Einzelabrechnungsergebnisse on Einzelabrechnung {
+  id
+  Abrechnungsposition
+  verteilt_nach
+  Gesamte_Einheiten
+  Einheit_Anteil
+  Einheit
+  Gesamte_Kosten
+  Kosten_Anteil
+}
+    `;
+export const HeizkostenabrechnungsResponseFragmentDoc = gql`
+    fragment HeizkostenabrechnungsResponse on Heizkostenabrechnung {
+  id
+  Kostenkonzept
+  Verteilschluessel_Einheit
+  Verteilschluessel
+  Kosten_pro_Einheit
+  Kosten_pro_Einheit
+  Betrag_in_Euro
+  Gesamt_in_Euro
 }
     `;
 export const HeizkostenergebnisseFragmentDoc = gql`
@@ -632,9 +787,81 @@ export const RegisterDocument = gql`
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
+export const SetAbrechnungIdDocument = gql`
+    mutation setAbrechnungId($AbrechnungsId: Float!) {
+  setAbrechnungId(AbrechnungsId: $AbrechnungsId)
+}
+    `;
+
+export function useSetAbrechnungIdMutation() {
+  return Urql.useMutation<SetAbrechnungIdMutation, SetAbrechnungIdMutationVariables>(SetAbrechnungIdDocument);
+};
+export const UpdateTableDocument = gql`
+    mutation UpdateTable($Aktion: String, $AbrechnungsInput: AbrechnungType!, $HeizkostenAbrechnungsInputArray: [HeizkostenType!]!, $EinzelabrechnungsInputArray: [EinzelabrechnungType!]!, $BewohnerBetribsInputdata: BewohnerBetriebskostenType!, $Betribskostenabrechnung: Float, $Nebenkostenvorrauszahlung: Float, $Grundsteuer: Float, $Rauchmelder: Float, $zuZahlendeKosten: Float, $wirdUeberwiesen: Float) {
+  updateTable(
+    options: {Aktion: $Aktion, Betribskostenabrechnung: $Betribskostenabrechnung, Nebenkostenvorrauszahlung: $Nebenkostenvorrauszahlung, Grundsteuer: $Grundsteuer, Rauchmelder: $Rauchmelder, zuZahlendeKosten: $zuZahlendeKosten, wirdUeberwiesen: $wirdUeberwiesen, HeizkostenAbrechnungsInputArray: $HeizkostenAbrechnungsInputArray, AbrechnungsInput: $AbrechnungsInput, EinzelabrechnungsInputArray: $EinzelabrechnungsInputArray, BewohnerBetribsInputdata: $BewohnerBetribsInputdata}
+  ) {
+    errors {
+      ...RegularError
+    }
+    Betribskostenabrechnung
+    Nebenkostenvorrauszahlung
+    Grundsteuer
+    Rauchmelder
+    zuZahlendeKosten
+    wirdUeberwiesen
+    AbrechnungsdataArray {
+      ...AbrechnungsResponse
+    }
+    HeizkostenAbrechnungsdataArray {
+      ...HeizkostenabrechnungsResponse
+    }
+    EinzelabrechnungsdataArray {
+      ...Einzelabrechnungsergebnisse
+    }
+    BewohnerBetribskostendata {
+      Position
+      Betrag
+    }
+  }
+}
+    ${RegularErrorFragmentDoc}
+${AbrechnungsResponseFragmentDoc}
+${HeizkostenabrechnungsResponseFragmentDoc}
+${EinzelabrechnungsergebnisseFragmentDoc}`;
+
+export function useUpdateTableMutation() {
+  return Urql.useMutation<UpdateTableMutation, UpdateTableMutationVariables>(UpdateTableDocument);
+};
+export const GetAllUserAbrechnungenDocument = gql`
+    query getAllUserAbrechnungen {
+  getAllUserAbrechnungen {
+    errors {
+      field
+      message
+    }
+    AbrechnungsdataArray {
+      AbrechnungsId
+      Start_Data
+      End_Data
+    }
+  }
+}
+    `;
+
+export function useGetAllUserAbrechnungenQuery(options: Omit<Urql.UseQueryArgs<GetAllUserAbrechnungenQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GetAllUserAbrechnungenQuery>({ query: GetAllUserAbrechnungenDocument, ...options });
+};
 export const GetGesamteAbrechnungDocument = gql`
     query GetGesamteAbrechnung {
   getAllegemeinebrechnung {
+    id
+    Betribskostenabrechnung
+    Nebenkostenvorrauszahlung
+    Grundsteuer
+    Rauchmelder
+    zuZahlendeKosten
+    wirdUeberwiesen
     errors {
       field
       message
@@ -651,10 +878,10 @@ export const GetGesamteAbrechnungDocument = gql`
       Abrechnungsposition
       verteilt_nach
       Gesamte_Einheiten
-      Gesamte_Kosten
       Einheit_Anteil
-      Kosten_Anteil
       Einheit
+      Gesamte_Kosten
+      Kosten_Anteil
     }
     HeizkostenAbrechnungsdataArray {
       id

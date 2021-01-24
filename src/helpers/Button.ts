@@ -15,11 +15,11 @@ const Button = styled.button`
 `
 
 export const Card = styled.div`
-             background-color: ${getChildrenBackground};
+            background-color: ${getChildrenBackground};
             margin: 1rem;
             flex-basis: 45%;
-            padding: 1rem;
-            text-align: left;
+            padding: 1rem; 
+            text-align: center;
             color: ${getTextColor};
             text-decoration: none;
             border: 1px solid black;
@@ -27,13 +27,11 @@ export const Card = styled.div`
             transition: color 0.15s ease, border-color 0.15s ease;
             &:hover {
             background-color: ${getHoverColor};
-            color: #1d1d1d;;
+            color: #1d1d1d;
+            cursor: pointer;
           }
              
 `
-
-//width: 50%
-
 export const Form = styled.form`
             background-color: ${getChildrenBackground};
             padding: 30px;
